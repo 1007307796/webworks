@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>JS作业</title>
+    <meta charset="UTF-8">
+    <style type="text/css">
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        table {
+            border-collapse: collapse;
+        }
+        .top{
+            height: 50px;
+            background-color: lightskyblue;
+            text-align: center;
+            line-height: 40px;
+        }
+        .left{
+            background-color: #b0b0b0;
+            width: 20%;
+            height: 800px;
+        }
+        .content div{
+            float: left;
+        }
+        .left p{
+            text-align: center;
+            border-color: blue;
+            margin: 0 auto;
+            border-style: solid;
+            border-width: 0 0 2px 0;
+        }
+        .left a{
+            text-decoration: none;
+        }
+        .right{
+            background-color: white;
+            width: 80%;
+            height: 800px;
+        }
+        .shadow{
+            position: fixed;
+            background-color: black;
+            opacity: 0.7;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .login,.edit{
+            position: fixed;
+            left: 40%;
+            top:30%;
+            width: 300px;
+            height: 200px;
+            background-color: white;
+            text-align: center;
+        }
+        .login label,.edit label{
+            display: block;
+        }
+        .hide {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="shadow" class="shadow hide"></div>
+<div id="login" class="login hide">
+    <p style="text-align: center">新增成员</p>
+    <label>姓名:<input type="text" id="name"></label>
+    <label>年龄:<input type="text" id="age"></label>
+    <label>工资:<input type="text" id="salary"></label>
+    <br>
+    <button onclick="submitdata(this);">提交</button>
+
+</div>
+<div id="edit" class="edit hide">
+    <p style="text-align: center">修改成员</p>
+    <label>姓名:<input type="text" id="oldname" value=""></label>
+    <label>年龄:<input type="text" id="oldage" value=""></label>
+    <label>工资:<input type="text" id="oldsalary" value=""></label>
+    <br>
+    <button onclick="submitedit();">提交</button>
+</div>
+<div class="top">
+    <p><a href="#" onclick="addnumber();">新增</a></p>
+</div>
+<div class="content">
+    <div class="left">
+        <p><a href="#" onclick="show();">技术部员工</a></p>
+        <p><a href="#" onclick="show();">市场部员工</a></p>
+    </div>
+    <div class="right">
+        <table border="1" id="tech" class="hide">
+            <caption>技术部员工</caption>
+            <thead>
+            <tr>
+                <th>姓名</th>
+                <th>年龄</th>
+                <th>工资</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody id="techdata">
+            </tbody>
+        </table>
+        <table border="1" id="market" class="hide">
+            <caption>市场部员工</caption>
+            <thead>
+            <tr>
+                <th>姓名</th>
+                <th>年龄</th>
+                <th>工资</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody id="marketdata">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function submitdata() {
+        var name = document.getElementById('name').value;
+        var age = document.getElementById('age').value;
+        var salary = document.getElementById('salary').value;
+        var tdoptions = document.createElement('td');
+        tdoptions.innerHTML = "<button onclick='deletenumber(this);'>删除</button>" +
+            "   <button onclick='editnumber(this);'>修改</button>";
+        var trNode = document.createElement('tr');
+        var number = {'name':name,'age':age,'salary':salary,};
+        for(var i in number){
+            var tdNode = document.createElement('td');
+            tdNode.innerText = number[i];
+            trNode.appendChild(tdNode);
+        }
+        trNode.appendChild(tdoptions);
+        var techbodyNode = document.getElementById('techdata');
+        var marketbodyNode = document.getElementById('marketdata');
+        if(!document.getElementById('tech').classList.contains('hide')){
+            techbodyNode.appendChild(trNode);
+        }else if(!document.getElementById('market').classList.contains('hide')){
+            marketbodyNode.appendChild(trNode);
+        }else{
+            alert('你还没有选择表格');
+        }
+        hidenumber();
+    }
+    function hidenumber() {
+        document.getElementById('shadow').classList.add('hide');
+        document.getElementById('login').classList.add('hide');
+    }
+    function addnumber() {
+        document.getElementById('shadow').classList.remove('hide');
+        document.getElementById('login').classList.remove('hide');
+    }
+    function deletenumber(self) {
+        var del = self.parentElement.parentElement;
+        del.remove();
+    }
+    function show() {
+        var techtable = document.getElementById('tech');
+        var markettable = document.getElementById('market');
+        if(techtable.classList.contains('hide')){
+            techtable.classList.remove('hide');
+            markettable.classList.add('hide');
+        }else{
+            techtable.classList.add('hide');
+            markettable.classList.remove('hide');
+        }
+
+    }
+    function editnumber(self) {
+        editdata = self.parentElement.parentElement;
+        var datalist = editdata.children;
+        var name = document.getElementById('oldname');
+        var age = document.getElementById('oldage');
+        var salary = document.getElementById('oldsalary');
+        name.value = datalist[0]['innerText'];
+        age.value = datalist[1]['innerText'];
+        salary.value = datalist[2]['innerText'];
+        document.getElementById('edit').classList.remove('hide')
+        addnumber();
+    }
+    function submitedit() {
+        var name = document.getElementById('oldname').value;
+        var age = document.getElementById('oldage').value;
+        var salary = document.getElementById('oldsalary').value;
+        var tdoptions = document.createElement('td');
+        tdoptions.innerHTML = "<button onclick='deletenumber(this);'>删除</button>" +
+            "   <button onclick='editnumber(this);'>修改</button>";
+        var trNode = document.createElement('tr');
+        var number = {'name':name,'age':age,'salary':salary,};
+        for(var i in number){
+            var tdNode = document.createElement('td');
+            tdNode.innerText = number[i];
+            trNode.appendChild(tdNode);
+        }
+        trNode.appendChild(tdoptions);
+        var techbodyNode = document.getElementById('techdata');
+        var marketbodyNode = document.getElementById('marketdata');
+        if(!document.getElementById('tech').classList.contains('hide')){
+            techbodyNode.appendChild(trNode);
+        }else{
+            marketbodyNode.appendChild(trNode);
+        }
+        hidenumber();
+        document.getElementById('edit').classList.add('hide')
+    }
+</script>
+</body>
+</html>
